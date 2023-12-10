@@ -243,6 +243,8 @@ var labelling_tool;
             // Frozen flag; while frozen, data will not be sent to backend
             this.frozen = false;
             this._lockableControls = $('.anno_lockable');
+            // Toggle ability to right click (Keybind: L)
+            this._lockRightClick = false;
             /*
              *
              *
@@ -711,6 +713,11 @@ var labelling_tool;
                     }
                 }
                 else if (button_event.button === 2) {
+                    if (_this._lockRightClick) {
+                        button_event.stopPropagation();
+                        return
+                    }
+
                     // Right click; on_cancel current tool
                     if (_this._current_tool !== null) {
                         var handled = _this._current_tool.on_cancel(self.get_mouse_pos_world_space());
@@ -828,6 +835,24 @@ var labelling_tool;
         };
         DjangoLabeller.prototype.on_key_down = function (event) {
             var handled = false;
+
+            // L to Lock
+            if (event.keyCode === 76) {
+                const toggleLockIcon = () => {
+                    const lockIcon = document.getElementById("lockIcon");
+                    if (lockIcon.style.display === "none") {
+                        lockIcon.style.display = "block";
+                    } else {
+                        lockIcon.style.display = "none";
+                    }
+                };
+
+                this._lockRightClick = !this._lockRightClick;
+                toggleLockIcon();
+
+                handled = true;
+            }
+
             if (event.keyCode === 186) {
                 if (this.label_visibility === labelling_tool.LabelVisibility.HIDDEN) {
                     this.set_label_visibility(labelling_tool.LabelVisibility.FULL);
