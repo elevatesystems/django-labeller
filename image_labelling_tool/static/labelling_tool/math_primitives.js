@@ -132,6 +132,13 @@ var labelling_tool;
             var y = Math.max(this.lower.y, Math.min(this.upper.y, p.y));
             return { x: x, y: y };
         };
+        AABox.prototype.closest_boundary_to = function (p) {
+            var lower_d = sub_Vector2(this.lower, p);
+            var upper_d = sub_Vector2(this.upper, p);
+            var x = Math.abs(lower_d.x) <= Math.abs(upper_d.x) ? this.lower.x : this.upper.x;
+            var y = Math.abs(lower_d.y) <= Math.abs(upper_d.y) ? this.lower.y : this.upper.y;
+            return { x: x, y: y };
+        };
         AABox.prototype.sqr_distance_to = function (p) {
             var c = this.closest_point_to(p);
             var dx = c.x - p.x, dy = c.y - p.y;

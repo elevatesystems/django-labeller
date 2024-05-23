@@ -42,7 +42,8 @@ except ImportError:
     SocketIO = None
     socketio_emit = None
 
-
+# Allow the loading of large images
+Image.MAX_IMAGE_PIXELS = None
 DextrImageType = Union[np.ndarray, Image.Image]
 DextrFunctionType = Callable[[DextrImageType, np.ndarray], np.ndarray]
 

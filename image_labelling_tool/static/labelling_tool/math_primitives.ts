@@ -165,6 +165,14 @@ module labelling_tool {
             return {x: x, y: y};
         }
 
+        closest_boundary_to(p: Vector2): Vector2 {
+            const lower_d = sub_Vector2(this.lower, p)
+            const upper_d = sub_Vector2(this.upper, p)
+            const x = Math.abs(lower_d.x) <= Math.abs(upper_d.x) ? this.lower.x : this.upper.x;
+            const y = Math.abs(lower_d.y) <= Math.abs(upper_d.y) ? this.lower.y : this.upper.y;
+            return {x, y};
+        }
+
         sqr_distance_to(p: Vector2): number {
             var c = this.closest_point_to(p);
             var dx: number = c.x - p.x, dy: number = c.y - p.y;
