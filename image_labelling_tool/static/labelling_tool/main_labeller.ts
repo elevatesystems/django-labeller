@@ -174,6 +174,9 @@ module labelling_tool {
         private _lockableControls: JQuery;
         private _lockNotification: JQuery;
 
+        private _lockRightClick: boolean;
+        private _allowPermanentDelete: boolean;
+
 
 
 
@@ -382,6 +385,11 @@ module labelling_tool {
 
 
             this._lockableControls = $('.anno_lockable');
+
+            // Toggle ability to right-click (Keybind: L)
+            this._lockRightClick = false;
+            // Allow for permanent unsafe delete (delete without modal popup)
+            this._allowPermanentDelete = false;
 
 
 
@@ -708,6 +716,11 @@ module labelling_tool {
                         self.root_view.delete_selection(canDelete);
                     });
                 });
+
+                var unsafe_delete_label_button = $('#unsafe_delete_label_button');
+                unsafe_delete_label_button.click(function (event) {
+                    self.root_view.delete_selection(canDelete);
+                });
             }
 
             if (config.tools.labelClassSelector) {
@@ -947,6 +960,11 @@ module labelling_tool {
                     }
                 }
                 else if (button_event.button === 2) {
+                    if (this._lockRightClick) {
+                        button_event.stopPropagation();
+                        return;
+                    }
+
                     // Right click; on_cancel current tool
                     if (this._current_tool !== null) {
                         var handled = this._current_tool.on_cancel(self.get_mouse_pos_world_space());
@@ -1082,6 +1100,31 @@ module labelling_tool {
 
         on_key_down(event: any): boolean {
             var handled = false;
+
+            // L to Lock
+            if (event.keyCode === 76) {
+                const toggleLockIcon = () => {
+                    const lockIcon = document.getElementById("lockIcon");
+                    if (lockIcon.style.display === "none") {
+                        lockIcon.style.display = "block";
+                    } else {
+                        lockIcon.style.display = "none";
+                    }
+                };
+
+                this._lockRightClick = !this._lockRightClick;
+                toggleLockIcon();
+
+                handled = true;
+            }
+
+            // DEL to Unsafe Delete
+            if (event.keyCode === 46) {
+                var unsafe_delete_label_button = $('#unsafe_delete_label_button');
+                if (unsafe_delete_label_button) unsafe_delete_label_button.click();
+                handled = true;
+            }
+
             if (event.keyCode === 186) {
                 if (this.label_visibility === LabelVisibility.HIDDEN) {
                     this.set_label_visibility(LabelVisibility.FULL);
