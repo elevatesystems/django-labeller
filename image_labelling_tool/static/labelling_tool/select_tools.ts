@@ -100,10 +100,10 @@ module labelling_tool {
         on_left_click(pos: Vector2, event: any) {
             this._update_entities_under_pointer(pos);
             if (this._current_entity !== null) {
-                this._view.select_entity(this._current_entity, event.shiftKey, true);
+                this._view.select_entity(this._current_entity, event.shiftKey || event.ctrlKey, true);
             }
             else {
-                if (!event.shiftKey) {
+                if (!event.shiftKey && !event.ctrlKey) {
                     this._view.unselect_all_entities();
                 }
             }
