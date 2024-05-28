@@ -105,10 +105,10 @@ var labelling_tool;
         SelectEntityTool.prototype.on_left_click = function (pos, event) {
             this._update_entities_under_pointer(pos);
             if (this._current_entity !== null) {
-                this._view.select_entity(this._current_entity, event.shiftKey, true);
+                this._view.select_entity(this._current_entity, event.shiftKey || event.ctrlKey, true);
             }
             else {
-                if (!event.shiftKey) {
+                if (!event.shiftKey && !event.ctrlKey) {
                     this._view.unselect_all_entities();
                 }
             }
